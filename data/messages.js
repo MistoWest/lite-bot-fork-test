@@ -10,26 +10,21 @@ const path = require('path');
 
 async function getCommandResponse(id, command, dirPath = './data') {
   try {
-    // Remove @g.us se existir
-    const cleanId = id.replace(/@g\.us$/, '').replace('@s.whatsapp.net', '');;
-    const filePath = path.join(dirPath, `${cleanId}.json`);    
+    const cleanId = id.replace(/@g\.us$/, '').replace('@s.whatsapp.net', '');
+    const filePath = path.join(dirPath, `${cleanId}.json`);
+    
     const data = await fs.readFile(filePath, 'utf8');
     const commands = JSON.parse(data);
 
+    // Pega apenas a primeira correspondência
     const foundCommand = commands.find(cmd => cmd.comando === command);
     
-    return foundCommand ? foundCommand.resposta : null;
+    return foundCommand || null;
     
   } catch (err) {
     if (err.code === 'ENOENT') {
       return null;
     }
-    
-    return null
+    return null;
   }
 }
-
-
-module.exports = {
-  getCommandResponse
-};
