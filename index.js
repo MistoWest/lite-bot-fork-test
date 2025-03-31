@@ -141,9 +141,15 @@ async function runLite({ socket, data }) {
       }
     }
 
-    const responseMessage = await getCommandResponse(info['key'].remoteJid, body)
-    if (responseMessage != null && !info.fromMe) {
-      await reply(`${responseMessage}`)
+    const commandData = await getCommandResponse(info['key'].remoteJid, body);
+    if (commandData !== null && !info.fromMe) {
+      const { type, resposta, content } = commandData;
+
+      if (type === 1) {
+        await reply(resposta);
+      } else if (type === 2) {
+        await imageFromFile(resposta, content || '');
+      }
     }
 
     // ⬇ Coloque mais respostas do auto-responder abaixo ⬇
